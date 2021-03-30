@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+  </head>
+
+  <body>
+    <script src="js/_.js"></script>
+    <script>
+      var users = [
+        {
+          id: 1,
+          name: "ID",
+          age: 36,
+        },
+        {
+          id: 2,
+          name: "BJ",
+          age: 32,
+        },
+        {
+          id: 3,
+          name: "JM",
+          age: 32,
+        },
+        {
+          id: 4,
+          name: "PJ",
+          age: 27,
+        },
+        {
+          id: 5,
+          name: "HA",
+          age: 25,
+        },
+        {
+          id: 6,
+          name: "JE",
+          age: 26,
+        },
+        {
+          id: 7,
+          name: "JI",
+          age: 31,
+        },
+        {
+          id: 8,
+          name: "MP",
+          age: 23,
+        },
+      ];
+
+      // 1. 명령형 코드   ------------------------------------------------------------------
+      // 1-1. 30세 이상인 users 거르기
+      let temp_users = [];
+      for (let i = 0; i < users.length; i++) {
+        if (users[i].age >= 30) {
+          temp_users.push(users[i]);
+        }
+      }
+      console.log(temp_users);
+
+      //1-2. 30세 이상인 users의 names 수집
+      let temp_names = [];
+      for (let i = 0; i < users.length; i++) {
+        if (users[i].age >= 30) {
+          temp_names.push(users[i].name);
+        }
+      }
+      console.log(temp_names);
+
+      // 1-3. 30세 미만인 users 거르기
+      let temp_users_30 = [];
+      for (let i = 0; i < users.length; i++) {
+        if (users[i].age < 30) {
+          temp_users_30.push(users[i]);
+        }
+      }
+      console.log(temp_users_30);
+
+      // 1-4. 30세 미만인 users의 ages 수집
+      let temp_ages = [];
+      for (let i = 0; i < users.length; i++) {
+        if (users[i].age < 30) {
+          temp_ages.push(users[i].age);
+        }
+      }
+      console.log(temp_ages);
+
+      // 2. 함수형 코드   ------------------------------------------------------------------
+      console.log(
+        "-----------------------------functional programming-----------------------------"
+      );
+      // 2-1. _filter 리팩토링
+      // function _filter(list, predicate) {
+      //     let new_list = [];
+      //     for (let i = 0; i < list.length; i++) {
+      //         // 함수형 프로그래밍에서는 추상화의 단위가 함수이다.
+      //         // 응용형 함수: 함수가 인자로 함수를 받아서, 원하는 시점에 인자로 받은 함수를 호출 ex)filter
+      //         // 고차 함수: 함수를 인자로 받거나, 함수 자체를 반환하거나 하는 함수
+      //         if (predicate(list[i])) {
+      //             new_list.push(list[i]);
+      //         }
+      //     }
+      //     return new_list;
+      // }
+      // 두 번째 인자 자체가 함수, 선언된 predicate 라는 이름으로 인자를 받는다.
+      console.log(
+        _filter(users, function (user) {
+          return user.age >= 30;
+        })
+      );
+      console.log(
+        _filter(users, function (user) {
+          return user.age < 30;
+        })
+      );
+
+      // 홀수 출력
+      console.log(
+        _filter([1, 2, 3, 4], function (num) {
+          return num % 2;
+        })
+      );
+      // 짝수 출력
+      console.log(
+        _filter([1, 2, 3, 4], function (num) {
+          return num % 2 === 0;
+        })
+      );
+
+      // // 2-2. _map 리팩토링
+      // function _map(list, mapper) {
+      //     let new_list = [];
+      //     for (let i = 0; i < list.length; i++) {
+      //         // 무엇을 push할 지, 인자로 받는 함수에게 위임
+      //         new_list.push(mapper(list[i]));
+      //     }
+      //     return new_list;
+      // }
+
+      // 2-1. _filter
+
+      // function _filter(list, predicate) {
+      //     let new_list = [];
+
+      //     _each(list, function (value) {
+      //         if (predicate(value)) {
+      //             new_list.push(value);
+      //         }
+      //     })
+      //     return new_list;
+      // }
+
+      // // 2-2. _map
+      // function _map(list, mapper) {
+      //     let new_list = [];
+
+      //     // cllaback는 _each 함수 내부의 iterator로 받는다
+      //     _each(list, function (value) {
+      //         new_list.push(mapper(value));
+      //     });
+
+      //     return new_list;
+      // }
+
+      // // 2-3. _each
+      // function _each(list, iterator) {
+      //     for (let i = 0; i < list.length; i++) {
+      //         iterator(list[i]);
+      //     }
+      //     return list;
+      // }
+
+      let over_30 = _filter(users, function (user) {
+        return user.age >= 30;
+      });
+      console.log(over_30);
+
+      let names = _map(over_30, function (user) {
+        return user.name;
+      });
+      console.log(names);
+
+      let ages = _map(
+        _filter(users, (user) => user.age < 30),
+        (user) => user.age
+      );
+      console.log(ages);
+
+      // ---------------------------------------------------------------------------
+      // 3. Currying
+      // : 일급함수이기 때문에 가능한 프로그래밍 기법 (함수 자체를 값으로 여기고 함수를 리턴할 수 있기에)
+
+      // function _curry(fn) {
+      //     return function (a, b) {
+      //         // 2. 최종함수 자체로 인자를 두개 받는 경우까지 커버하기 위해 작성 ex) add(2, 3)
+      //         if (arguments.length === 2) return fn(a, b)
+      //  //아래의 함수는 인자를 2개 받기 전까지 클로저가 된다.
+      //         return function (b) {
+      //             // 1. 내부에서 인자로 받은 함수 자체를 값으로 갖고 있다가 마지막에 평가
+      //             // 내부에서 최종적으로 평가되기 때문에, 인자를 2개 받아야 호출된다. ex)add(2)(3)
+      //             return fn(a, b);
+      //         }
+      //     }
+      // }
+
+      // // 위의 _curry 함수 리팩토링 (삼항연산자)
+      // function _curry(fn) {
+      //     return function (a, b) {
+      //         // 위의 2. if문을 삼항연산자로 처리
+      //         return arguments.length === 2 ?
+      //             fn(a, b) : function (b) {
+      //                 return fn(a, b);
+      //             }
+      //     }
+      // }
+
+      // // _curry의 인자를 오른쪽부터 적용하는 함수 _curryr(right)
+      // function _curryr(fn) {
+      //     return function (a, b) {
+      //         return arguments.length === 2 ?
+      //             fn(a, b) : function (b) {
+      //                 // 들어온 인자를 거꾸로 적용
+      //                 return fn(b, a);
+      //             }
+      //     }
+      // }
+      // _curry의 인자로 최종함수 선언
+      let addCurry = _curry(function (a, b) {
+        return a + b;
+      });
+
+      let add11 = addCurry(11);
+      // 1. 인자가 1개만 들어갔기 때문에, 내부함수 자체를 리턴한다
+      console.log(add11);
+      console.log(add11(5));
+
+      // 1. 인자를 두개 넣어줘야 호출된다.
+      console.log(addCurry(11)(5));
+
+      // 2. _curry 내부에 if문에 의해 가능해진 호출 방법
+      console.log(addCurry(2, 3));
+
+      let sub = _curryr(function (a, b) {
+        return a - b;
+      });
+
+      console.log(sub(10)(11)); // 1
+      console.log(sub(10, 12)); // -2
+
+      let sub10 = sub(10);
+      console.log(sub10(5));
+      // 결과값은 원하는 대로 5가 나오지만, 함수의 이름상 'sub10(b)' b에서 10을 빼야 맞는 표현
+      // 따라서 curry의 인자를 왼쪽부터가 아닌 오른쪽부터 계산하는 함수 curryR 작성
+
+      // ----------------------------------------------------------------------
+      // 2. _get 만들어 좀 더 간단하게 하기
+      // 객체의 값을 보다 안전하게 가져오는 함수
+      function _get0(obj, key) {
+        return obj == null ? undefined : obj[key];
+      }
+
+      let user11 = users[0];
+      console.log(user11.name);
+      console.log(_get0(user11, "name"));
+
+      // console.log(users[10].name); // 없는 Object(undefined)에서 값을 참조하려고 하면... undefined 오류 발생
+      console.log(_get0(users[10], "name")); // 에러가 나지 않고, undefined를 반환 -> 보다 안전하게 get 해올 수 있다.
+
+      // _curryr로 get 함수를 보다 효율적으로 만들기
+      // let _get = _curryr(function (obj, key) {
+      //     return obj == null ? undefined : obj[key];
+      // });
+
+      // _curryr로 거꾸로 인자 받기
+      console.log(_get("name")(users[0]));
+
+      // 이 자체가 name을 꺼내오는 함수가 된다
+      let get_name = _get("name");
+
+      console.log(get_name(users[2]));
+      console.log(get_name(users[3]));
+      console.log(get_name(users[4]));
+
+      // 최종적으로 이전보다 간결하게 표현 가능 - _map, _filter, _curryr, _get 을 통해
+      console.log(
+        _map(
+          _filter(users, function (user) {
+            return user.age >= 30;
+          }),
+          // 따라서 이렇게 표현 가능.. _map의 mapper로써 호출된다
+          _get("name")
+        )
+      );
+
+      console.log(
+        _map(
+          _filter(users, function (user) {
+            return user.age < 30;
+          }),
+          _get("age")
+        )
+      );
+
+      console.clear();
+      // ------------------------------------------------------------------
+      // 4.  _reduce 만들기
+      // filter, map 등은 새로운 배열을 반환하지만,
+      // reduce는 배열이 아닌 새로운 어떤 값을 반환할 때 사용한다
+      // iter로 받은 함수를 재귀적으로 계속해서 호출하면서 하나의 어떤 값으로 축약해 나가는 함수
+      // 복잡하고 다양한 로직을 구현하게 해주는 역할을 많이 한다.
+
+      // 아래와 같은 개념
+      // memo = add(0, 1);
+      // memo = add(memo, 2);
+      // memo = add(memo, 3);
+      // return memo;
+
+      // 유사배열을 배열로 리턴(첫번째 인자를 자르고)
+      // let slice = Array.prototype.slice;
+
+      // function _rest(arrayLike, num) {
+      //     // num이 있다면 num, 없다면 1이 default;
+      //     return slice.call(arrayLike, num || 1);
+      // }
+
+      let arrLike = document.querySelectorAll("*");
+      console.log(arrLike);
+      console.log(Array.isArray(arrLike));
+      console.log(_rest(arrLike, 2));
+      console.log(Array.isArray(_rest(arrLike, 2)));
+
+      // function _reduce(list, iter, memo) {
+      //     // memo를 받지 않았을 때도 작동하게끔. 인자가 앞의 2개 일 때
+      //     if (arguments.length == 2) {
+      //         // 첫 번째 인자를 memo default로 삼고
+      //         memo = list[0];
+      //         // _rest에서 첫 번째 인자 잘라버리기 ... 그래야 첫번째 인자 중복 x
+      //         list = _rest(list);
+      //     }
+      //     _each(list, function (val) {
+      //         memo = iter(memo, val);
+      //     })
+      //     return memo;
+      // }
+
+      console.log(
+        _reduce(
+          [1, 2, 3, 4],
+          function (a, b) {
+            return a + b;
+          },
+          0
+        )
+      ); // 10
+
+      console.log(
+        _reduce(
+          [1, 2, 3, 4],
+          function (a, b) {
+            return a + b;
+          },
+          10
+        )
+      ); // 20
+
+      // memo parameter를 넣지 않고 호출
+      console.log(
+        _reduce([1, 2, 3, 4], function (a, b) {
+          return a + b;
+        })
+      ); // 10
+
+      // 5. 파이프라인 만들기
+      // 1. _pipe
+      // 함수를 인자로 받아 순차적으로 실행시켜주는 함수
+      // reduce의 특화 함수.. reduce가 보다 추상화된 함수
+      // 함수 자체를 리턴하는 함수
+
+      // function _pipe() {
+      //     // 인자로 받는 함수들 변수 선언
+      //     const fns = arguments;
+
+      //     return function (arg) {
+      //         // reduce는 클로저(비공개변수 fns를 갖는다)
+      //         return _reduce(fns, function (arg, fn) {
+      //             return fn(arg);
+      //         }, arg)
+      //     }
+      // }
+
+      let f1 = _pipe(
+        function (a) {
+          return a + 1; // 1 + 1
+        },
+        function (a) {
+          return a * 2; // 2 * 2
+        },
+        function (a) {
+          return a * a;
+        }
+      );
+      console.log(f1(1)); // 16
+
+      // 2. _go
+      // _pipe : 함수를 리턴하는 함수
+      //  _go : 결과 값을 바로 리턴하는 함수. _pipe의 즉시 실행 버전
+
+      // function _go(arg) {
+      //     // 유사배열을 배열로
+      //     const fns = _rest(arguments);
+      //     // _pipe를 호출하여 실행
+      //     return _pipe.apply(null, fns)(arg);
+      // }
+
+      _go(
+        1,
+        function (a) {
+          return a + 1; // 1 + 1
+        },
+        function (a) {
+          return a * 2; // 2 * 2
+        },
+        function (a) {
+          return a * a;
+        },
+        console.log
+      );
+
+      //아래 코드들 _go를 통해 리팩토링
+      console.log(
+        _map(
+          _filter(users, function (user) {
+            return user.age >= 30;
+          }),
+          // 따라서 이렇게 표현 가능.. _map의 mapper로써 호출된다
+          _get("name")
+        )
+      );
+
+      console.log(
+        _map(
+          _filter(users, function (user) {
+            return user.age < 30;
+          }),
+          _get("age")
+        )
+      );
+
+      // 위의 식을 _go를 통해 순차적으로 작성하여 가독성 좋게 수정
+      console.log("-------------------------------------------");
+      _go(
+        users,
+        function (users) {
+          return _filter(users, function (user) {
+            return user.age >= 30;
+          });
+        },
+        function (users) {
+          return _map(users, _get("name"));
+        },
+        console.log
+      );
+      _go(
+        users,
+        function (users) {
+          return _filter(users, function (user) {
+            return user.age < 30;
+          });
+        },
+        function (users) {
+          return _map(users, _get("age"));
+        },
+        console.log
+      );
+
+      // filter와 map에 _curryR 적용하여 간결하게 만들기
+      // filter를 인자 하나만 넘기고 실행할 경우, 인자가 오른쪽부터 적용된 새로운 함수를 리턴
+      _filter = _curryr(_filter); //_filter(iter)(list)   arguments 가 1개인 경우(역순)
+      _map = _curryr(_map); //_map(mapper)(list)    arugments 가 1개인 경우(역순)
+
+      console.log("-------------------------------------------");
+      _go(
+        users,
+        _filter((user) => user.age >= 30),
+        _map(_get("name")),
+        console.log
+      );
+
+      // _curryr + Arrow Function 사용하여 간결하게 만들기
+      _go(
+        users,
+        _filter((user) => user.age < 30),
+        _map(_get("age")),
+        // _map((user) => user.age),    // _get()가 보다 간결
+        console.log
+      );
+
+      // 6. 다형성을 통해 예외적인 데이터 처리하기
+      // 6-1. _each에 null 넣어도 에러 안나도록
+      _each(null, console.log);
+
+      // _map도 내부적으로 _each를 사용하기 때문에, null을 인자로 받아도 에러가 발생하지 않고 빈 배열을 반환한다.
+      console.log(
+        _map(null, function (v) {
+          return v;
+        })
+      );
+
+      // _filter도 마찬가지..
+      console.log(
+        _filter(null, function (v) {
+          return v;
+        })
+      );
+
+      // 함수형 프로그래밍에서는 함수의 연속실행을 할 때, 인자로 null, undefined가 들어와도
+      // 에러를 발생시키지않고 흘려버리는 전략을 주로 취한다.
+      // 연속적인 함수 실행이 문제가 없도록
+      // try catch를 잘 하지 않고, 또 typeof 등의 타입 체크를 하지 않고, 흘린다.
+      // underscore, lodash 와 같은 유명한 utility lib에서도 이런식으로 data를 다루며 구현
+      // 강하게 형타입을 체크하는 방식도 있는 반면, 이렇게 흘려보내는 프로그래밍 방식도 존재한다
+      _go(
+        null,
+        _filter(function (v) {
+          return v % 2 === 0;
+        }),
+        _map(function (v) {
+          return v * v;
+        }),
+        console.log
+      );
+
+      // 6 - 2. _keys
+      // Object.keys() 를 보다 안전하게 만든 함수
+      console.log(
+        Object.keys({
+          name: "jee",
+          age: 31,
+          height: 150,
+        })
+      );
+      // keyValue 객체의 key뿐 아니라, 배열의 경우 index 를 추출한다
+      console.log(Object.keys([5, 4, 3, 2, 1]));
+      // 숫자일 경우 빈 배열 반환
+      console.log(Object.keys(6));
+
+      // 하지만, null을 넣으면 에러 발생 => 이 부분을 잡는 함수를 만들어보자
+      // console.log(Object.keys(null));
+
+      // 타입 체크와 널체크
+      function _is_object(obj) {
+        return typeof obj == "object" && !!obj;
+      }
+
+      function _keys(obj) {
+        // 타입체크를 먼저 하고, object가 아니라면(null, undefined) 빈 배열 반환
+        return _is_object(obj) ? Object.keys(obj) : [];
+      }
+
+      console.log(
+        _keys({
+          name: "jee",
+          age: 31,
+          height: 150,
+        })
+      );
+      console.log(_keys([5, 4, 3, 2, 1]));
+      console.log(_keys(6));
+
+      console.log(_keys(null));
+      console.log(_keys(undefined));
+
+      //6-4. _each의 외부 다형성 높이기
+      // array가 아니라도 key:value를 가진 오브젝트도 배열을 돌도록...
+      // length 가 없고, index가 0부터 시작하지 않으므로 비정상 작동
+      let keyValue = {
+        13: "id",
+        14: "ID",
+        29: "id",
+      };
+
+      _each(keyValue, function (name) {
+        console.log(name);
+      });
+
+      // keyValue 역시 loop을 돌릴 수 있어졌다(다형성)
+      console.log(
+        _map(keyValue, function (name) {
+          return name.toLowerCase();
+        })
+      );
+
+      // 배열 안에 있는 객체
+      _go(
+        users,
+        _map(function (user) {
+          return user.name;
+        }),
+        _map(function (val) {
+          return val.toLowerCase();
+        }),
+        console.log
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function _curry(fn) {
+        return function (a, b) {
+          return arguments.length === 2
+            ? fn(a, b)
+            : function (b) {
+                return fn(a, b);
+              };
+        };
+      }
+      const add = _curry((a, b) => a + b);
+      console.log(add(10)(5));
+      console.log(add(10, 5));
+
+      // const sub = _curry((a, b) => a - b);
+      // console.log(sub(10)(5));
+      // console.log(sub(10, 5));
+      // const sub10 = sub(10);
+      // console.log(sub10(5));
+
+      // 오른쪽으로 부터 인자를 계산하는 curryR
+      function _curryR(fn) {
+        return function (a, b) {
+          return arguments.length === 2
+            ? fn(a, b)
+            : function (b) {
+                return fn(b, a);
+              };
+        };
+      }
+
+      const subR = _curryR((a, b) => a - b);
+      console.log(subR(10)(5));
+      console.log(subR(10, 5));
+      const sub10R = subR(10);
+      console.log(sub10R(5));
+
+      function _get(obj, key) {
+        return obj == null ? undefined : obj[key];
+      }
+
+      function Person(name, age) {
+        this.name = name;
+        this.age = age;
+      }
+      const a = new Person("a", 10);
+      const b = new Person("b", 20);
+
+      let p = { name: "p", age: 30 };
+      console.log(_get(a, "age"));
+      console.log(_get(p, "age"));
+
+      let get = _curryR(_get);
+      let getName = get("name");
+      console.log(getName(p));
+    </script>
+  </body>
+</html>

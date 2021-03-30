@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+  </head>
+
+  <body>
+    <script>
+      console.log("////////start");
+
+      function _each(list, iterFunc) {
+        for (let i = 0; i < list.length; i++) {
+          iterFunc(list[i]);
+        }
+        return list;
+      }
+
+      function _filter(list, prediFunc) {
+        let new_list = [];
+
+        _each(list, (value) => {
+          if (prediFunc(value)) {
+            new_list.push(value);
+          }
+        });
+        return new_list;
+      }
+
+      function _map(list, mapperFunc) {
+        let new_list = [];
+
+        _each(list, (value) => {
+          new_list.push(mapperFunc(value));
+        });
+        return new_list;
+      }
+
+      function _curry(func) {
+        return function (a, b) {
+          return arguments.length === 2 ? func(a, b) : (b) => func(a, b);
+        };
+      }
+
+      function _curryr(func) {
+        return function (a, b) {
+          return arguments.length === 2 ? func(a, b) : (b) => func(b, a);
+        };
+      }
+
+      let _get = _curryr((obj, key) => (obj == null ? undefined : obj[key]));
+      //-----------------------------------------------------------------------
+      const arr = [
+        {
+          name: "jee",
+          age: 30,
+          detail: {
+            height: 160,
+            weight: 50,
+          },
+        },
+        {
+          name: "min",
+          age: 20,
+          detail: {
+            height: 150,
+            weight: 40,
+          },
+        },
+        {
+          name: "haeng",
+          age: 90,
+          detail: {
+            height: 190,
+            weight: 80,
+          },
+        },
+      ];
+
+      console.log("each------------------------------");
+      _each(arr, console.log);
+
+      _each(arr, function (value) {
+        console.log(value["age"]);
+      });
+      console.clear();
+      console.log("filter-------------------------------");
+      console.log(
+        _filter(arr, function (value) {
+          return value.age <= 30;
+        })
+      );
+
+      console.log("map------------------------------");
+      const result = _map(
+        _filter(arr, (user) => user.age < 40),
+        (user) => user.age * 2
+      );
+      console.log(result);
+
+      console.log(
+        _map(arr, (user) => {
+          let new_user = Object.assign({}, user);
+          new_user.name = new_user.name.concat("oh");
+          return new_user;
+        })
+      );
+
+      console.log("curry --------------------------------");
+
+      let curryAdd = _curry(function (a, b) {
+        return a + b;
+      });
+      console.log(curryAdd(3)(7));
+      console.log(curryAdd(3, 8));
+
+      let curryAdd3 = _curry((a, b) => a + b)(3);
+      console.log(curryAdd3(11));
+
+      let currySub = _curryr((a, b) => a - b);
+      let currySub100 = currySub(100);
+      console.log(currySub(60)(100));
+      console.log(currySub100(50));
+
+      console.log(" get -------------------------------------");
+
+      console.log(_get(arr[2], "detail"));
+      let get_name = _get("name");
+      console.log(get_name(arr[0]));
+      // console.log(arr[100].name);  // error
+      console.log(get_name(arr[10]));
+
+      // Arrow Function은 arguments 속성을 가지고 있지 않다.
+      console.log((a, b) => {
+        console.log(this);
+        return a + b;
+      });
+      console.log(function (a, b) {
+        console.log(this);
+        console.log(arguments);
+        return a + b;
+      });
+    </script>
+  </body>
+</html>
