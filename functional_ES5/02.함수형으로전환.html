@@ -258,6 +258,8 @@
       // ----------------------------------------------------------------------
       // 2. _get 만들어 좀 더 간단하게 하기
       // 객체의 값을 보다 안전하게 가져오는 함수
+      // null 처리 
+      // obj === null 처럼 동등연산자로 처리 시, undefined 는 null 로 인정되지 않는다... 타입 공부 필요
       function _get0(obj, key) {
         return obj == null ? undefined : obj[key];
       }
@@ -331,6 +333,8 @@
       console.log(Array.isArray(arrLike));
       console.log(_rest(arrLike, 2));
       console.log(Array.isArray(_rest(arrLike, 2)));
+
+      
 
       // function _reduce(list, iter, memo) {
       //     // memo를 받지 않았을 때도 작동하게끔. 인자가 앞의 2개 일 때

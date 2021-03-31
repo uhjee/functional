@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function _rest(list, num) {
+        return Array.prototype.slice.call(list, num || 1);
+      }
+
+      function _each(list, iterator) {
+        for (let i = 0; i < list.length; i++) {
+          iterator(list[i]);
+        }
+        return list;
+      }
+
+      function _reduce(list, iter, memo) {
+        if (arguments.length == 2) {
+          memo = list[0];
+          list = _rest(list);
+        }
+        _each(list, function (val) {
+          memo = iter(memo, val);
+        });
+        return memo;
+      }
+
+      console.log(_reduce([1,2,3,4,5], (a, b) => a*b));
+    </script>
+  </body>
+</html>

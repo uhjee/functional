@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      let _get = _curryr((obj, key) => (obj == null ? undefined : obj[key]));
+
+      // _pipe
+      // 함수를 다루는 함수
+      // 인자로 받은 함수들을 실행시켜주는 함수를 리턴하는 함수
+
+      function _pipe() {
+        let fns = arguments;
+        return function (arg) {
+          return _reduce(
+            fns,
+            function (arg, fn) {
+              return fn(arg);
+            },
+            arg
+          );
+        };
+      }
+
+      // go 는 pipe의 즉시 실행 호출 함수
+      function _go(arg) {
+        let fns = _rest(arguments);
+        //  fns 는 배열 자체로 넘겨줘야하기 때문에 apply 사용, call과 비교
+        // fns 안의 fn들을 각각 하나의 인자로 넘겨주게 된다.
+        // pipe(fn,fn,fn,fn,)
+        return _pipe.apply(null, fns)(arg);
+
+        // return _pipe(fns)(arg);
+        // 첫번째 인자로 _pipe([fn, fn, fn, fn ]) 넘겨주게 된다.
+      }
+
+      _go(
+        1,
+        function (a) {
+          return a + 1;
+        },
+        function (a) {
+          return a * 2;
+        },
+        function (a) {
+          return a * a;
+        },
+        console.log
+      );
+
+      const arr = [
+        { name: "jee", age: 30, detail: { height: 160, weight: 50 } },
+        { name: "min", age: 20, detail: { height: 150, weight: 40 } },
+        { name: "haeng", age: 90, detail: { height: 190, weight: 80 } },
+      ];
+
+      _go(
+        arr,
+        function (arr) {
+          return _filter(arr, (user) => user.age < 90);
+        },
+        function (arr) {
+          return _map(arr, _get("name"));
+        },
+        console.log
+      );
+
+      // let f1 = _pipe(
+      //   function (a) {
+      //     return a + 1;
+      //   },
+      //   function (a) {
+      //     return a * 2;
+      //   }
+      // );
+
+      function _rest(list, num) {
+        return Array.prototype.slice.call(list, num || 1);
+      }
+
+      function _each(list, iterator) {
+        for (let i = 0; i < list.length; i++) {
+          iterator(list[i]);
+        }
+        return list;
+      }
+
+      function _reduce(list, iter, memo) {
+        if (arguments.length == 2) {
+          memo = list[0];
+          list = _rest(list);
+        }
+        _each(list, function (val) {
+          memo = iter(memo, val);
+        });
+        return memo;
+      }
+
+      function _filter(list, prediFunc) {
+        let new_list = [];
+
+        _each(list, (value) => {
+          if (prediFunc(value)) {
+            new_list.push(value);
+          }
+        });
+        return new_list;
+      }
+
+      function _map(list, mapperFunc) {
+        let new_list = [];
+        _each(list, (value) => {
+          new_list.push(mapperFunc(value));
+        });
+        return new_list;
+      }
+      function _curry(func) {
+        return function (a, b) {
+          return arguments.length === 2 ? func(a, b) : (b) => func(a, b);
+        };
+      }
+
+      function _curryr(func) {
+        return function (a, b) {
+          return arguments.length === 2 ? func(a, b) : (b) => func(b, a);
+        };
+      }
+
+    </script>
+  </body>
+</html>
