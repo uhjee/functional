@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="./js/funcional.js"></script>
+  </head>
+  <body>
+    <script>
+      const users = [
+        {
+          name: "heo",
+          age: 24,
+          address: "seoul",
+        },
+        {
+          name: "jee",
+          age: 29,
+          address: "paju",
+        },
+        {
+          name: "lim",
+          age: 44,
+          address: "seoul",
+        },
+        {
+          name: "lee",
+          age: 54,
+          address: "jeju",
+        },
+        {
+          name: "seo",
+          age: 21,
+          address: "incheon",
+        },
+      ];
+
+      // _each(users, console.log);
+      // console.log(_filter(users, (user) => user.age > 50));
+      // console.log(
+      //   _map(users, (user) => ({
+      //     ...user,
+      //     country: "korea",
+      //   }))
+      // );
+      // const add = _curry(function (a, b) {
+      //   return a + b;
+      // });
+      // const add10 = add(10);
+
+      // console.log(add10(4));
+      // console.log(add(1, 5));
+      // const sub = _curryR(function (a, b) {
+      //   return a - b;
+      // });
+      // console.log(sub(10)(5));
+
+      // const nameString = _reduce(users, (memo, user) => {
+      //   return memo + user.name;
+      // });
+      // console.log(nameString);
+      let f1 = _pipe(
+        function (a) {
+          return a + 1; // 1 + 1
+        },
+        function (a) {
+          return a * 2; // 2 * 2
+        },
+        function (a) {
+          return a * a;
+        }
+      );
+      console.log(f1(1));
+    </script>
+  </body>
+</html>
