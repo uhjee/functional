@@ -22,7 +22,7 @@ var _get = _curryr(function (obj, key) {
   return obj == null ? undefined : obj[key];
 });
 
-var _length = _get("length");
+var _length = _get('length');
 
 function _each(list, iter) {
   var keys = _keys(list);
@@ -39,7 +39,6 @@ function _filter(list, predi) {
   });
   return new_list;
 }
-
 function _map(list, mapper) {
   var new_list = [];
   _each(list, function (val, key) {
@@ -51,7 +50,7 @@ function _map(list, mapper) {
 var _pairs = _map((val, key) => [key, val]);
 
 function _is_object(obj) {
-  return typeof obj == "object" && !!obj;
+  return typeof obj == 'object' && !!obj;
 }
 
 function _keys(obj) {
@@ -91,7 +90,7 @@ function _pipe() {
       function (arg, fn) {
         return fn(arg);
       },
-      arg
+      arg,
     );
   };
 }
@@ -196,7 +195,7 @@ var _group_by = _curryr(function (data, iter) {
     function (grouped, val) {
       return _push(grouped, iter(val), val);
     },
-    {}
+    {},
   );
 });
 
@@ -215,6 +214,6 @@ var _count_by = _curryr(function (data, iter) {
     function (count, val) {
       return _inc(count, iter(val));
     },
-    {}
+    {},
   );
 });
